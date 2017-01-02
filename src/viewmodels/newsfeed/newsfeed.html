@@ -1,5 +1,42 @@
 <template>
 
-  HI!
+  <section class="ui grid" style="margin-top: 25px">
 
+    <aside class="ui five wide column">
+      <div class="ui card">
+        <div class="image">
+
+        </div>
+        <div class="content">
+          <a class="header">${user.firstName} ${user.lastName}</a>
+          <div class="meta">
+            <span class="date">Joined on: ${user.joined}</span>
+          </div>
+          <div class="description">
+          </div>
+        </div>
+        <div class="extra content">
+          <a>
+            <i class="user icon"></i>
+          </a>
+        </div>
+      </div>
+    </aside>
+
+    <section class="ui six wide column">
+      <compose class="ui six wide column" view-model="../tweetList/tweetList"></compose>
+    </section>
+
+    <div class="five wide column">
+      <div class="raised segment">
+        <form class="ui fluid form" submit.delegate="createTweet()">
+          Share your thoughts!
+          <textarea name="content" placeholder="..." maxlength="140" value.bind="content"
+                    style="resize: none"></textarea>
+          <button class="ui submit button">Tweet</button>
+        </form>
+      </div>
+    </div>
+
+  </section>
 </template>

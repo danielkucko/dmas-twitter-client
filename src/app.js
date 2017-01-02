@@ -11,12 +11,16 @@ export class App {
     this.ts = ts;
     ea.subscribe(LoginStatus, msg => {
       if (msg.status.success === true) {
+        this.router.navigate('/', {replace: true, trigger: false});
         au.setRoot('home').then(() => {
           this.router.navigateToRoute('newsfeed');
         });
-      } else {
+      } else{
+        this.router.navigate('/', {replace: true, trigger: false,});
         au.setRoot('app').then(() => {
           this.router.navigateToRoute('login');
+        }).catch(error => {
+          console.log(error);
         });
       }
     });
@@ -28,9 +32,9 @@ export class App {
       { route: 'signup', name: 'signup', moduleId: 'viewmodels/signup/signup', nav: true, title: 'Signup' }
     ]);
 
-   /* config.mapUnknownRoutes(instruction => {
+    config.mapUnknownRoutes(instruction => {
       return 'login';
-    });*/
+    });
 
     this.router = router;
   }

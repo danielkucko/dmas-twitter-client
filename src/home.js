@@ -10,13 +10,14 @@ export class Home {
   configureRouter(config, router) {
     config.map([
       { route: ['', 'newsfeed'], name: 'newsfeed', moduleId: 'viewmodels/newsfeed/newsfeed', nav: true, title: 'Newsfeed' },
+      { route: 'profile', name: 'profile', moduleId: 'viewmodels/profile/profile', nav: true, title: 'Profile'},
       { route: 'search', name: 'search', moduleId: 'viewmodels/search/search', nav: true, title: 'Search' },
       { route: 'logout', name: 'logout', moduleId: 'viewmodels/logout/logout', nav: true, title: 'Logout' }
     ]);
 
-    /*config.mapUnknownRoutes(instruction => {
+    config.mapUnknownRoutes(instruction => {
       return 'newsfeed';
-    });*/
+    });
 
     this.router = router;
   }

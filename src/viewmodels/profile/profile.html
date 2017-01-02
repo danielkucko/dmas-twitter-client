@@ -1,0 +1,28 @@
+<template>
+
+  <form submit.delegate="update()" class="ui stacked segment form">
+    <h3 class="ui header">Update your profile information</h3>
+    <div class="two fields">
+      <div class="field">
+        <label>First Name</label>
+        <input type="text" value.bind="loggedInUser.firstName">
+      </div>
+      <div class="field">
+        <label>Last Name</label>
+        <input type="text" value.bind="loggedInUser.lastName">
+      </div>
+    </div>
+    <div class="field">
+      <label>Email</label>
+      <input type="text" value.bind="loggedInUser.email">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" value.bind="loggedInUser.password">
+    </div>
+    <button class="ui blue submit button">Submit</button>
+  </form>
+
+  <compose view-model="../tweetList/tweetList"></compose>
+
+</template>
