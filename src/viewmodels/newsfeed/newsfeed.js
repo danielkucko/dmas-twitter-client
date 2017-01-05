@@ -9,10 +9,19 @@ export class Newsfeed {
 
   constructor(twitterService) {
     this.twitterService = twitterService;
-    this.twitterService.getTweets();
-    if (this.twitterService.loggedInUser == undefined){
-      this.twitterService.getUserInfo();
-    }
+  }
+
+  activate(){
+    return new Promise((resolve, reject) => {
+      this.twitterService.getTweets();
+      if (this.twitterService.loggedInUser == undefined){
+        this.twitterService.getUserInfo();
+      }
+      let u = this.twitterService.loggedInUser;
+      resolve(u);
+    }).then(u => {
+      this.user = u;
+    });
   }
 
   createTweet(){

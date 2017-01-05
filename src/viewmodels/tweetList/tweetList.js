@@ -8,7 +8,15 @@ export class TweetList{
 
   constructor(ts){
     this.ts = ts;
-    this.tweets = this.ts.tweets;
+  }
+
+  activate(){
+    return new Promise((resolve, reject) => {
+      let t = this.ts.tweets;
+      resolve(t);
+    }).then(t => {
+      this.tweets = t;
+    });
   }
 
 }

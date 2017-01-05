@@ -10,7 +10,6 @@ export default class TwitterService {
   users = [];
   tweets = [];
   comments = [];
-  loggedInUser = {};
 
   constructor(data, ea, ac) {
     this.methods = data.methods;
@@ -85,6 +84,7 @@ export default class TwitterService {
     };
     this.ac.clearAuthentication();
     this.ea.publish(new LoginStatus(status));
+    this.loggedInUser = undefined;
   }
 
   isAuthenticated() {

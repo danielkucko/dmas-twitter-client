@@ -9,12 +9,20 @@ export class Profile {
 
   constructor(twitterService){
     this.twitterService = twitterService;
-    this.twitterService.getUserTweets();
-    this.loggedInUser = this.twitterService.loggedInUser;
+  }
+
+  activate(){
+    return new Promise((resolve, reject) => {
+      this.twitterService.getUserTweets();
+      let u = this.twitterService.loggedInUser;
+      resolve(u);
+    }).then(u => {
+        this.loggedInUser = u;
+    });
   }
 
   update(){
-    this.twitterService.updateUser(loggedInUser);
+    this.twitterService.updateUser(this.loggedInUser);
   }
 
 
