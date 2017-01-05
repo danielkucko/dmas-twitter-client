@@ -15,7 +15,7 @@ export class Profile {
     return new Promise((resolve, reject) => {
       this.twitterService.getUserTweets();
       let u = this.twitterService.loggedInUser;
-      resolve(u);
+      setTimeout(function(){resolve(u);}, 200);
     }).then(u => {
         this.loggedInUser = u;
     });

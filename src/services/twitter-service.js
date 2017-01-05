@@ -20,43 +20,43 @@ export default class TwitterService {
   getUsers(){
     this.ac.get('/api/users').then(res => {
       this.users = res.content;
-    })
+    });
   }
 
   getTweets(){
     this.ac.get('/api/tweets').then(res => {
       this.tweets = res.content;
-    })
+    });
   }
 
   getUserTweets(){
     this.ac.get('/api/users/' + this.loggedInUser._id + '/tweets').then(res => {
       this.tweets = res.content;
-    })
+    });
   }
 
   getComments(){
     this.ac.get('/api/comments').then(res => {
       this.comments = res.content;
-    })
+    });
   }
 
   updateUser(user){
     this.ac.post('/api/users/update', user).then(res => {
       this.loggedInUser = res.content;
-    })
+    });
   }
 
   createTweet(tweet){
     this.ac.post('/api/tweets', tweet).then(res => {
       return res.content;
-    })
+    });
   }
 
   getUserInfo(){
     this.ac.get('/api/loggedInUser').then(res => {
       this.loggedInUser = res.content;
-    })
+    });
   }
 
   register(firstName, lastName, email, password) {
