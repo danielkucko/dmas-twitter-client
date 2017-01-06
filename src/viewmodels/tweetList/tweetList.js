@@ -19,5 +19,9 @@ export class TweetList{
     });
   }
 
+  delete(_id){
+    this.ts.deleteTweet(_id);
+  }
+
 }
 

@@ -6,6 +6,9 @@
         <img class="ui avatar image" src="" class="header">${tweet.author.firstName} ${tweet.author.lastName}
         <div class="meta">
           <span class="date">${tweet.date}</span>
+          <form submit.delegate="delete(tweet._id)">
+            <button class="submit"><i class="ui delete icon"></i></button>
+          </form>
         </div>
         <div class="description" style="padding: 10px">
           ${tweet.content}

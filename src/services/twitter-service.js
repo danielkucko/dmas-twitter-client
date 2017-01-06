@@ -59,6 +59,18 @@ export default class TwitterService {
     });
   }
 
+  search(keyword){
+    this.ac.post('/api/users/search', keyword).then(res => {
+      this.users = res.content;
+    });
+  }
+
+  deleteTweet(_id){
+    this.ac.delete('/api/tweets/' + _id).then(res => {
+
+    });
+  }
+
   register(firstName, lastName, email, password) {
     const newUser = {
       firstName: firstName,

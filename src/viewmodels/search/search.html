@@ -1,5 +1,22 @@
 <template>
 
-  Hi!
+  <form submit.delegate="search()">
+    <input type="text" name="Name" value.bind="keyword" placeholder="Search for User..." required>
+    <button class="ui submit button"><i class="ui search icon"></i></button>
+  </form>
+
+  <div class="cards">
+    <div class="ui card" repeat.for="user of users">
+      <div class="content">
+        <img class="ui avatar image" src="" class="header">${user.firstName} ${user.lastName}
+        <div class="meta">
+          <span class="date">Joined: ${user.joined}</span>
+        </div>
+        <div class="description" style="padding: 10px">
+          Go to Profile
+        </div>
+      </div>
+    </div>
+  </div>
 
 </template>
