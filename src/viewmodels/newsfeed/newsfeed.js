@@ -30,7 +30,9 @@ export class Newsfeed {
       content: this.content,
       date: Date.now()
     };
-    this.twitterService.createTweet(tweet);
+    this.twitterService.createTweet(tweet).then(t => {
+        this.twitterService.tweets.unshift(t);
+    });
   }
 
 }

@@ -48,9 +48,11 @@ export default class TwitterService {
   }
 
   createTweet(tweet){
-    this.ac.post('/api/tweets', tweet).then(res => {
-      return res.content;
-    });
+    return new Promise((resolve, reject) => {
+      this.ac.post('/api/tweets', tweet).then(res => {
+        resolve(res.content);
+      });
+    })
   }
 
   getUserInfo(){

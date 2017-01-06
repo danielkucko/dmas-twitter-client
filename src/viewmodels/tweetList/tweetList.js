@@ -5,9 +5,11 @@ import TwitterService from '../../services/twitter-service';
 export class TweetList{
 
   tweets = [];
+  loggedInUser = {};
 
   constructor(ts){
     this.ts = ts;
+    this.loggedInUser = this.ts.loggedInUser;
   }
 
   activate(){
@@ -21,6 +23,10 @@ export class TweetList{
 
   delete(_id){
     this.ts.deleteTweet(_id);
+    let tweetToDelete = this.tweets.find(function(tweet){
+      return tweet._id == _id;
+    });
+    this.tweets.splice(this.tweets.indexOf(tweetToDelete), 1);
   }
 
 }
