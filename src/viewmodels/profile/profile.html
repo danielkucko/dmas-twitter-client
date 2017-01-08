@@ -1,28 +1,57 @@
 <template>
 
-  <form submit.delegate="update()" class="ui stacked segment form">
-    <h3 class="ui header">Update your profile information</h3>
-    <div class="two fields">
-      <div class="field">
-        <label>First Name</label>
-        <input type="text" value.bind="loggedInUser.firstName">
-      </div>
-      <div class="field">
-        <label>Last Name</label>
-        <input type="text" value.bind="loggedInUser.lastName">
-      </div>
-    </div>
-    <div class="field">
-      <label>Email</label>
-      <input type="text" value.bind="loggedInUser.email">
-    </div>
-    <div class="field">
-      <label>Password</label>
-      <input type="password" value.bind="loggedInUser.password">
-    </div>
-    <button class="ui blue submit button">Submit</button>
-  </form>
+  <div class="ui grid" style="padding-top: 25px">
 
-  <compose view-model="../tweetList/tweetList"></compose>
+    <div class="ui ten wide column">
+
+      <form submit.delegate="update()" class="ui stacked segment form"
+            if.bind="loggedInUser._id == displayUser._id || displayUser == undefined">
+        <h3 class="ui header">Update your profile information</h3>
+        <div class="two fields">
+          <div class="field">
+            <label>First Name</label>
+            <input type="text" value.bind="loggedInUser.firstName" required>
+          </div>
+          <div class="field">
+            <label>Last Name</label>
+            <input type="text" value.bind="loggedInUser.lastName" required>
+          </div>
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <input type="text" value.bind="loggedInUser.email" required>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <input type="password" value.bind="loggedInUser.password" required>
+        </div>
+        <button class="ui blue submit button">Submit</button>
+      </form>
+
+      <div class="ui card" if.bind="loggedInUser._id != displayUser._id && displayUser != undefined">
+        <div class="image">
+
+        </div>
+        <div class="content">
+          <a class="header">${displayUser.firstName} ${displayUser.lastName}</a>
+          <div class="meta">
+            <span class="date">Joined on: ${displayUser.joined}</span>
+          </div>
+          <div class="description">
+          </div>
+        </div>
+        <div class="extra content">
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="ui six wide column">
+      Tweets by this User:
+      <compose view-model="../tweetList/tweetList"></compose>
+    </div>
+
+  </div>
 
 </template>

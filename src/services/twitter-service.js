@@ -35,6 +35,12 @@ export default class TwitterService {
     });
   }
 
+  getTweetsByUser(_id){
+    this.ac.get('/api/users/' + _id + '/tweets').then(res => {
+      this.tweets = res.content;
+    })
+  }
+
   getComments(){
     this.ac.get('/api/comments').then(res => {
       this.comments = res.content;
@@ -59,6 +65,12 @@ export default class TwitterService {
     this.ac.get('/api/loggedInUser').then(res => {
       this.loggedInUser = res.content;
     });
+  }
+
+  getUserDetail(_id){
+    this.ac.get('/api/users/'+_id).then(res => {
+      this.displayUser = res.content;
+    })
   }
 
   search(keyword){
