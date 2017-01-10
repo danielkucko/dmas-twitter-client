@@ -17,7 +17,12 @@ export class TweetList{
       let t = this.ts.tweets;
       resolve(t);
     }).then(t => {
-      this.tweets = t;
+      for (let tweet of this.tweets){
+        this.tweets.pop();
+      }
+      for (let tweet of t){
+        this.tweets.push(tweet);
+      }
     });
   }
 

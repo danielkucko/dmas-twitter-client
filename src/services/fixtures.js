@@ -1,5 +1,5 @@
 export default class Fixtures {
 
-  baseUrl = 'http://localhost:4000';
+  baseUrl = 'https://rocky-ridge-20427.herokuapp.com';
 
 }

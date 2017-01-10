@@ -25,7 +25,7 @@ export class Profile {
       } else {
         this.twitterService.getTweetsByUser(d._id);
       }
-      setTimeout(function(){resolve(u);}, 200);
+      setTimeout(function(){resolve(u);}, 400);
     }).then(u => {
       this.loggedInUser = u;
       this.displayUser = this.twitterService.displayUser;
