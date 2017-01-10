@@ -14,26 +14,25 @@ export class Search {
     this.myRouter = router;
   }
 
-  search(){
+  search() {
     this.twitterService.search(this.keyword);
     let that = this;
-    for (let u of this.users){
+    for (let u of this.users) {
       this.users.pop();
     }
-    setTimeout(function(){
-      let u = that.twitterService.users;
-      for (let user of u){
-        that.users.push(user);
-      }
-    }, 200);
+    let u = that.twitterService.users;
+    for (let user of u) {
+      that.users.push(user);
+    }
+
   }
 
-  goToProfile(_id){
-    this.twitterService.getUserDetail(_id);
-    let that = this;
-    setTimeout(function(){
-      that.myRouter.navigate("Profile");
-    }, 400);
+  goToProfile(_id) {
+    let detailUser = this.users.find(function (user) {
+      return user._id == _id;
+    });
+    this.twitterService.displayUser = detailUser;
+    this.myRouter.navigate("Profile");
   }
 
 }

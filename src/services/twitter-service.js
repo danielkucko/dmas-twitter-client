@@ -1,6 +1,6 @@
 import {inject} from 'aurelia-framework';
 import Fixtures from './fixtures';
-import {TotalUpdate, LoginStatus} from './messages';
+import {Tweets, LoginStatus} from './messages';
 import {EventAggregator} from 'aurelia-event-aggregator';
 import AsyncHttpClient from './async-http-client';
 
@@ -26,18 +26,21 @@ export default class TwitterService {
   getTweets(){
     this.ac.get('/api/tweets').then(res => {
       this.tweets = res.content;
+      this.publishTweets();
     });
   }
 
   getUserTweets(){
     this.ac.get('/api/users/' + this.loggedInUser._id + '/tweets').then(res => {
       this.tweets = res.content;
+      this.publishTweets();
     });
   }
 
   getTweetsByUser(_id){
     this.ac.get('/api/users/' + _id + '/tweets').then(res => {
       this.tweets = res.content;
+      this.publishTweets();
     })
   }
 
@@ -115,6 +118,10 @@ export default class TwitterService {
 
   isAuthenticated() {
     return this.ac.isAuthenticated();
+  }
+
+  publishTweets(){
+    this.ea.publish(new Tweets(this.tweets));
   }
 
 }

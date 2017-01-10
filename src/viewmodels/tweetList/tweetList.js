@@ -1,29 +1,26 @@
 import {inject} from 'aurelia-framework';
 import TwitterService from '../../services/twitter-service';
+import {EventAggregator} from 'aurelia-event-aggregator';
+import {Tweets} from '../../services/messages';
 
-@inject(TwitterService)
+@inject(TwitterService, EventAggregator)
 export class TweetList{
 
   tweets = [];
   loggedInUser = {};
 
-  constructor(ts){
+  constructor(ts, ea){
     this.ts = ts;
     this.loggedInUser = this.ts.loggedInUser;
-  }
-
-  activate(){
-    return new Promise((resolve, reject) => {
-      let t = this.ts.tweets;
-      setTimeout(function(){resolve(t)}, 200);
-    }).then(t => {
-      for (let tweet of this.tweets){
+    ea.subscribe(Tweets, msg => {
+      for (let t of this.tweets){
         this.tweets.pop();
       }
-      for (let tweet of t){
+      for (let tweet of msg.tweets){
         this.tweets.push(tweet);
       }
-    });
+    })
+
   }
 
   delete(_id){

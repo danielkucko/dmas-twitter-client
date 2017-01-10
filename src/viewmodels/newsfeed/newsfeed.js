@@ -18,8 +18,7 @@ export class Newsfeed {
         this.twitterService.getUserInfo();
       }
       let u = this.twitterService.loggedInUser;
-      setTimeout(function(){resolve(u);}, 400);
-
+      resolve(u);
     }).then(u => {
       this.user = u;
     });
