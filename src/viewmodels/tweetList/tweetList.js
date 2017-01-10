@@ -15,7 +15,7 @@ export class TweetList{
   activate(){
     return new Promise((resolve, reject) => {
       let t = this.ts.tweets;
-      resolve(t);
+      setTimeout(function(){resolve(t)}, 200);
     }).then(t => {
       for (let tweet of this.tweets){
         this.tweets.pop();
