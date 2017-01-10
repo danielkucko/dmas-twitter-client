@@ -33,7 +33,7 @@ export class Search {
     let that = this;
     setTimeout(function(){
       that.myRouter.navigate("Profile");
-    }, 200);
+    }, 400);
   }
 
 }
