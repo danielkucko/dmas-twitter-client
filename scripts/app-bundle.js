@@ -294,6 +294,12 @@ define('services/messages',["exports"], function (exports) {
 
     this.status = status;
   };
+
+  var Tweets = exports.Tweets = function Tweets(tweets) {
+    _classCallCheck(this, Tweets);
+
+    this.tweets = tweets;
+  };
 });
 define('services/twitter-service',['exports', 'aurelia-framework', './fixtures', './messages', 'aurelia-event-aggregator', './async-http-client'], function (exports, _aureliaFramework, _fixtures, _messages, _aureliaEventAggregator, _asyncHttpClient) {
   'use strict';
@@ -347,6 +353,7 @@ define('services/twitter-service',['exports', 'aurelia-framework', './fixtures',
 
       this.ac.get('/api/tweets').then(function (res) {
         _this2.tweets = res.content;
+        _this2.publishTweets();
       });
     };
 
@@ -355,6 +362,7 @@ define('services/twitter-service',['exports', 'aurelia-framework', './fixtures',
 
       this.ac.get('/api/users/' + this.loggedInUser._id + '/tweets').then(function (res) {
         _this3.tweets = res.content;
+        _this3.publishTweets();
       });
     };
 
@@ -363,6 +371,7 @@ define('services/twitter-service',['exports', 'aurelia-framework', './fixtures',
 
       this.ac.get('/api/users/' + _id + '/tweets').then(function (res) {
         _this4.tweets = res.content;
+        _this4.publishTweets();
       });
     };
 
@@ -450,6 +459,10 @@ define('services/twitter-service',['exports', 'aurelia-framework', './fixtures',
 
     TwitterService.prototype.isAuthenticated = function isAuthenticated() {
       return this.ac.isAuthenticated();
+    };
+
+    TwitterService.prototype.publishTweets = function publishTweets() {
+      this.ea.publish(new _messages.Tweets(this.tweets));
     };
 
     return TwitterService;
@@ -579,9 +592,7 @@ define('viewmodels/newsfeed/newsfeed',['exports', '../../services/twitter-servic
           _this.twitterService.getUserInfo();
         }
         var u = _this.twitterService.loggedInUser;
-        setTimeout(function () {
-          resolve(u);
-        }, 400);
+        resolve(u);
       }).then(function (u) {
         _this.user = u;
       });
@@ -651,9 +662,7 @@ define('viewmodels/profile/profile',['exports', '../../services/twitter-service'
         } else {
           _this.twitterService.getTweetsByUser(d._id);
         }
-        setTimeout(function () {
-          resolve(u);
-        }, 400);
+        resolve(u);
       }).then(function (u) {
         _this.loggedInUser = u;
         _this.displayUser = _this.twitterService.displayUser;
@@ -721,37 +730,35 @@ define('viewmodels/search/search',['exports', '../../services/twitter-service', 
           _ref = _i.value;
         }
 
-        var u = _ref;
+        var _u = _ref;
 
         this.users.pop();
       }
-      setTimeout(function () {
-        var u = that.twitterService.users;
-        for (var _iterator2 = u, _isArray2 = Array.isArray(_iterator2), _i2 = 0, _iterator2 = _isArray2 ? _iterator2 : _iterator2[Symbol.iterator]();;) {
-          var _ref2;
+      var u = that.twitterService.users;
+      for (var _iterator2 = u, _isArray2 = Array.isArray(_iterator2), _i2 = 0, _iterator2 = _isArray2 ? _iterator2 : _iterator2[Symbol.iterator]();;) {
+        var _ref2;
 
-          if (_isArray2) {
-            if (_i2 >= _iterator2.length) break;
-            _ref2 = _iterator2[_i2++];
-          } else {
-            _i2 = _iterator2.next();
-            if (_i2.done) break;
-            _ref2 = _i2.value;
-          }
-
-          var user = _ref2;
-
-          that.users.push(user);
+        if (_isArray2) {
+          if (_i2 >= _iterator2.length) break;
+          _ref2 = _iterator2[_i2++];
+        } else {
+          _i2 = _iterator2.next();
+          if (_i2.done) break;
+          _ref2 = _i2.value;
         }
-      }, 200);
+
+        var user = _ref2;
+
+        that.users.push(user);
+      }
     };
 
     Search.prototype.goToProfile = function goToProfile(_id) {
-      this.twitterService.getUserDetail(_id);
-      var that = this;
-      setTimeout(function () {
-        that.myRouter.navigate("Profile");
-      }, 200);
+      var detailUser = this.users.find(function (user) {
+        return user._id == _id;
+      });
+      this.twitterService.displayUser = detailUser;
+      this.myRouter.navigate("Profile");
     };
 
     return Search;
@@ -794,7 +801,6 @@ define('viewmodels/signup/signup',['exports', 'aurelia-framework', '../../servic
     }
 
     Signup.prototype.register = function register() {
-      this.showSignup = false;
       this.twitterService.register(this.firstName, this.lastName, this.email, this.password);
       this.twitterService.login(this.email, this.password);
     };
@@ -802,7 +808,7 @@ define('viewmodels/signup/signup',['exports', 'aurelia-framework', '../../servic
     return Signup;
   }()) || _class);
 });
-define('viewmodels/tweetList/tweetList',['exports', 'aurelia-framework', '../../services/twitter-service'], function (exports, _aureliaFramework, _twitterService) {
+define('viewmodels/tweetList/tweetList',['exports', 'aurelia-framework', '../../services/twitter-service', 'aurelia-event-aggregator', '../../services/messages'], function (exports, _aureliaFramework, _twitterService, _aureliaEventAggregator, _messages) {
   'use strict';
 
   Object.defineProperty(exports, "__esModule", {
@@ -826,8 +832,10 @@ define('viewmodels/tweetList/tweetList',['exports', 'aurelia-framework', '../../
 
   var _dec, _class;
 
-  var TweetList = exports.TweetList = (_dec = (0, _aureliaFramework.inject)(_twitterService2.default), _dec(_class = function () {
-    function TweetList(ts) {
+  var TweetList = exports.TweetList = (_dec = (0, _aureliaFramework.inject)(_twitterService2.default, _aureliaEventAggregator.EventAggregator), _dec(_class = function () {
+    function TweetList(ts, ea) {
+      var _this = this;
+
       _classCallCheck(this, TweetList);
 
       this.tweets = [];
@@ -835,15 +843,7 @@ define('viewmodels/tweetList/tweetList',['exports', 'aurelia-framework', '../../
 
       this.ts = ts;
       this.loggedInUser = this.ts.loggedInUser;
-    }
-
-    TweetList.prototype.activate = function activate() {
-      var _this = this;
-
-      return new Promise(function (resolve, reject) {
-        var t = _this.ts.tweets;
-        resolve(t);
-      }).then(function (t) {
+      ea.subscribe(_messages.Tweets, function (msg) {
         for (var _iterator = _this.tweets, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
           var _ref;
 
@@ -856,11 +856,11 @@ define('viewmodels/tweetList/tweetList',['exports', 'aurelia-framework', '../../
             _ref = _i.value;
           }
 
-          var tweet = _ref;
+          var t = _ref;
 
           _this.tweets.pop();
         }
-        for (var _iterator2 = t, _isArray2 = Array.isArray(_iterator2), _i2 = 0, _iterator2 = _isArray2 ? _iterator2 : _iterator2[Symbol.iterator]();;) {
+        for (var _iterator2 = msg.tweets, _isArray2 = Array.isArray(_iterator2), _i2 = 0, _iterator2 = _isArray2 ? _iterator2 : _iterator2[Symbol.iterator]();;) {
           var _ref2;
 
           if (_isArray2) {
@@ -872,12 +872,12 @@ define('viewmodels/tweetList/tweetList',['exports', 'aurelia-framework', '../../
             _ref2 = _i2.value;
           }
 
-          var _tweet = _ref2;
+          var tweet = _ref2;
 
-          _this.tweets.push(_tweet);
+          _this.tweets.push(tweet);
         }
       });
-    };
+    }
 
     TweetList.prototype.delete = function _delete(_id) {
       this.ts.deleteTweet(_id);

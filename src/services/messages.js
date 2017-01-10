@@ -3,3 +3,9 @@ export class LoginStatus {
     this.status = status;
   }
 }
+
+export class Tweets {
+  constructor(tweets){
+    this.tweets = tweets;
+  }
+}
