@@ -13,14 +13,13 @@ export class TweetList{
     this.ts = ts;
     this.loggedInUser = this.ts.loggedInUser;
     ea.subscribeOnce(Tweets, msg => {
-      console.log(Math.random());
       for (let t of this.tweets){
         this.tweets.pop();
       }
       for (let tweet of msg.tweets){
         this.tweets.push(tweet);
       }
-    })
+    });
 
   }
 
