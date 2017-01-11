@@ -843,7 +843,8 @@ define('viewmodels/tweetList/tweetList',['exports', 'aurelia-framework', '../../
 
       this.ts = ts;
       this.loggedInUser = this.ts.loggedInUser;
-      ea.subscribe(_messages.Tweets, function (msg) {
+      ea.subscribeOnce(_messages.Tweets, function (msg) {
+        console.log(Math.random());
         for (var _iterator = _this.tweets, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
           var _ref;
 

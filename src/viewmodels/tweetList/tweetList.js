@@ -12,7 +12,8 @@ export class TweetList{
   constructor(ts, ea){
     this.ts = ts;
     this.loggedInUser = this.ts.loggedInUser;
-    ea.subscribe(Tweets, msg => {
+    ea.subscribeOnce(Tweets, msg => {
+      console.log(Math.random());
       for (let t of this.tweets){
         this.tweets.pop();
       }
