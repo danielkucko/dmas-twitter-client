@@ -17,72 +17,72 @@ export default class TwitterService {
     this.ac = ac;
   }
 
-  getUsers(){
+  getUsers() {
     this.ac.get('/api/users').then(res => {
       this.users = res.content;
     });
   }
 
-  getTweets(){
+  getTweets() {
     this.ac.get('/api/tweets').then(res => {
       this.tweets = res.content;
       this.publishTweets();
     });
   }
 
-  getUserTweets(){
+  getUserTweets() {
     this.ac.get('/api/users/' + this.loggedInUser._id + '/tweets').then(res => {
       this.tweets = res.content;
       this.publishTweets();
     });
   }
 
-  getTweetsByUser(_id){
+  getTweetsByUser(_id) {
     this.ac.get('/api/users/' + _id + '/tweets').then(res => {
       this.tweets = res.content;
       this.publishTweets();
     })
   }
 
-  getComments(){
+  getComments() {
     this.ac.get('/api/comments').then(res => {
       this.comments = res.content;
     });
   }
 
-  updateUser(user){
+  updateUser(user) {
     this.ac.post('/api/users/update', user).then(res => {
       this.loggedInUser = res.content;
     });
   }
 
-  createTweet(tweet){
-    return new Promise((resolve, reject) => {
-      this.ac.post('/api/tweets', tweet).then(res => {
-        resolve(res.content);
-      });
-    })
+  createTweet(tweet) {
+    this.ac.post('/api/tweets', tweet).then(res => {
+      this.tweets.push(res.content);
+      this.publishTweets();
+    });
+
   }
 
-  getUserInfo(){
+  getUserInfo() {
     this.ac.get('/api/loggedInUser').then(res => {
       this.loggedInUser = res.content;
     });
   }
 
-  getUserDetail(_id){
-    this.ac.get('/api/users/'+_id).then(res => {
+  getUserDetail(_id) {
+    this.ac.get('/api/users/' + _id).then(res => {
       this.displayUser = res.content;
     })
   }
 
-  search(keyword){
+  search(keyword) {
     this.ac.post('/api/users/search', keyword).then(res => {
       this.users = res.content;
     });
   }
 
-  deleteTweet(_id){
+  deleteTweet(_id) {
     this.ac.delete('/api/tweets/' + _id).then(res => {
 
     });
@@ -120,7 +120,7 @@ export default class TwitterService {
     return this.ac.isAuthenticated();
   }
 
-  publishTweets(){
+  publishTweets() {
     this.ea.publish(new Tweets(this.tweets));
   }
 

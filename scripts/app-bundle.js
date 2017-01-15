@@ -394,10 +394,9 @@ define('services/twitter-service',['exports', 'aurelia-framework', './fixtures',
     TwitterService.prototype.createTweet = function createTweet(tweet) {
       var _this7 = this;
 
-      return new Promise(function (resolve, reject) {
-        _this7.ac.post('/api/tweets', tweet).then(function (res) {
-          resolve(res.content);
-        });
+      this.ac.post('/api/tweets', tweet).then(function (res) {
+        _this7.tweets.push(res.content);
+        _this7.publishTweets();
       });
     };
 
@@ -599,15 +598,11 @@ define('viewmodels/newsfeed/newsfeed',['exports', '../../services/twitter-servic
     };
 
     Newsfeed.prototype.createTweet = function createTweet() {
-      var _this2 = this;
-
       var tweet = {
         content: this.content,
         date: Date.now()
       };
-      this.twitterService.createTweet(tweet).then(function (t) {
-        _this2.twitterService.tweets.unshift(t);
-      });
+      this.twitterService.createTweet(tweet);
     };
 
     return Newsfeed;
@@ -843,7 +838,7 @@ define('viewmodels/tweetList/tweetList',['exports', 'aurelia-framework', '../../
 
       this.ts = ts;
       this.loggedInUser = this.ts.loggedInUser;
-      ea.subscribe(_messages.Tweets, function (msg) {
+      ea.subscribeOnce(_messages.Tweets, function (msg) {
         for (var _iterator = _this.tweets, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
           var _ref;
 
@@ -893,8 +888,8 @@ define('viewmodels/tweetList/tweetList',['exports', 'aurelia-framework', '../../
 define('text!app.html', ['module'], function(module) { module.exports = "<template>\n  <require from=\"nav-bar.html\"></require>\n  <div class=\"ui container page-host\">\n    <nav-bar router.bind=\"router\"></nav-bar>\n    <router-view></router-view>\n  </div>\n</template>\n"; });
 define('text!home.html', ['module'], function(module) { module.exports = "<template>\n  <require from=\"nav-bar.html\"></require>\n  <div class=\"ui container page-host\">\n    <nav-bar router.bind=\"router\"></nav-bar>\n    <router-view></router-view>\n  </div>\n</template>\n"; });
 define('text!nav-bar.html', ['module'], function(module) { module.exports = "<template bindable=\"router\">\n  <nav class=\"ui inverted menu\">\n    <header class=\"header item\"><a href=\"/\"> DMAS Twitter </a></header>\n    <div class=\"right menu\">\n      <div repeat.for=\"row of router.navigation\">\n        <a class=\"${row.isActive ? 'active' : ''} item\"  href.bind=\"row.href\">${row.title}</a>\n      </div>\n    </div>\n  </nav>\n</template>\n"; });
-define('text!viewmodels/login/login.html', ['module'], function(module) { module.exports = "<template>\n\n  <form submit.delegate=\"login($event)\" class=\"ui stacked segment form\">\n    <h3 class=\"ui header\">Log-in</h3>\n    <div class=\"field\">\n      <label>Email</label> <input placeholder=\"Email\" value.bind=\"email\"/>\n    </div>\n    <div class=\"field\">\n      <label>Password</label> <input type=\"password\" value.bind=\"password\"/>\n    </div>\n    <button class=\"ui blue submit button\">Login</button>\n    <h3>${prompt}</h3>\n  </form>\n\n</template>\n"; });
 define('text!viewmodels/logout/logout.html', ['module'], function(module) { module.exports = "<template>\n\n  <form submit.delegate=\"logout($event)\" class=\"ui stacked segment form\">\n    <h3 class=\"ui header\">Are you sure you want to log out?</h3>\n    <button class=\"ui blue submit button\">Logout</button>\n  </form>\n\n</template>\n"; });
+define('text!viewmodels/login/login.html', ['module'], function(module) { module.exports = "<template>\n\n  <form submit.delegate=\"login($event)\" class=\"ui stacked segment form\">\n    <h3 class=\"ui header\">Log-in</h3>\n    <div class=\"field\">\n      <label>Email</label> <input placeholder=\"Email\" value.bind=\"email\"/>\n    </div>\n    <div class=\"field\">\n      <label>Password</label> <input type=\"password\" value.bind=\"password\"/>\n    </div>\n    <button class=\"ui blue submit button\">Login</button>\n    <h3>${prompt}</h3>\n  </form>\n\n</template>\n"; });
 define('text!viewmodels/newsfeed/newsfeed.html', ['module'], function(module) { module.exports = "<template>\n\n  <section class=\"ui grid\" style=\"margin-top: 25px\">\n\n    <aside class=\"ui five wide column\">\n      <div class=\"ui card\">\n        <div class=\"image\">\n\n        </div>\n        <div class=\"content\">\n          <a class=\"header\">${user.firstName} ${user.lastName}</a>\n          <div class=\"meta\">\n            <span class=\"date\">Joined on: ${user.joined}</span>\n          </div>\n          <div class=\"description\">\n          </div>\n        </div>\n        <div class=\"extra content\">\n          <a>\n            <i class=\"user icon\"></i>\n          </a>\n        </div>\n      </div>\n    </aside>\n\n    <section class=\"ui six wide column\">\n      <compose class=\"ui six wide column\" view-model=\"../tweetList/tweetList\"></compose>\n    </section>\n\n    <div class=\"five wide column\">\n      <div class=\"raised segment\">\n        <form class=\"ui fluid form\" submit.delegate=\"createTweet()\">\n          Share your thoughts!\n          <textarea name=\"content\" placeholder=\"...\" maxlength=\"140\" value.bind=\"content\"\n                    style=\"resize: none\"></textarea>\n          <button class=\"ui submit button\">Tweet</button>\n        </form>\n      </div>\n    </div>\n\n  </section>\n</template>\n"; });
 define('text!viewmodels/profile/profile.html', ['module'], function(module) { module.exports = "<template>\n\n  <div class=\"ui grid\" style=\"padding-top: 25px\">\n\n    <div class=\"ui ten wide column\">\n\n      <form submit.delegate=\"update()\" class=\"ui stacked segment form\"\n            if.bind=\"loggedInUser._id == displayUser._id || displayUser == undefined\">\n        <h3 class=\"ui header\">Update your profile information</h3>\n        <div class=\"two fields\">\n          <div class=\"field\">\n            <label>First Name</label>\n            <input type=\"text\" value.bind=\"loggedInUser.firstName\" required>\n          </div>\n          <div class=\"field\">\n            <label>Last Name</label>\n            <input type=\"text\" value.bind=\"loggedInUser.lastName\" required>\n          </div>\n        </div>\n        <div class=\"field\">\n          <label>Email</label>\n          <input type=\"text\" value.bind=\"loggedInUser.email\" required>\n        </div>\n        <div class=\"field\">\n          <label>Password</label>\n          <input type=\"password\" value.bind=\"loggedInUser.password\" required>\n        </div>\n        <button class=\"ui blue submit button\">Submit</button>\n      </form>\n\n      <div class=\"ui card\" if.bind=\"loggedInUser._id != displayUser._id && displayUser != undefined\">\n        <div class=\"image\">\n\n        </div>\n        <div class=\"content\">\n          <a class=\"header\">${displayUser.firstName} ${displayUser.lastName}</a>\n          <div class=\"meta\">\n            <span class=\"date\">Joined on: ${displayUser.joined}</span>\n          </div>\n          <div class=\"description\">\n          </div>\n        </div>\n        <div class=\"extra content\">\n\n        </div>\n      </div>\n\n    </div>\n\n    <div class=\"ui six wide column\">\n      Tweets by this User:\n      <compose view-model=\"../tweetList/tweetList\"></compose>\n    </div>\n\n  </div>\n\n</template>\n"; });
 define('text!viewmodels/search/search.html', ['module'], function(module) { module.exports = "<template>\n\n  <form submit.delegate=\"search()\">\n    <input type=\"text\" name=\"Name\" value.bind=\"keyword\" placeholder=\"Search for User...\" required>\n    <button class=\"ui submit button\"><i class=\"ui search icon\"></i></button>\n  </form>\n\n  <div class=\"cards\">\n    <div class=\"ui card\" repeat.for=\"user of users\">\n      <div class=\"content\">\n        <img class=\"ui avatar image\" src=\"\" class=\"header\">${user.firstName} ${user.lastName}\n        <div class=\"meta\">\n          <span class=\"date\">Joined: ${user.joined}</span>\n        </div>\n        <div class=\"description\" style=\"padding: 10px\">\n          <button class=\"ui secondary basic button\" click.delegate=\"goToProfile(user._id)\">Go to Profile</button>\n        </div>\n      </div>\n    </div>\n  </div>\n\n</template>\n"; });
